@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String
+  email        String        @unique
+  password     String
+  bankAccounts BankAccount[]
+  categories   Category[]
+  Transaction  Transaction[]
+
+  @@map("users")
+}
+
+model BankAccount {
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String
+  type           BankAccountType
+  color          String
+  userId         String          @map("user_id") @db.Uuid
+  initialBalance Float           @map("initial_balance")
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions   Transaction[]
+
+  @@map("bank_accounts")
+}
+
+model Category {
+  id           String         @id @default(uuid()) @db.Uuid
+  userId       String         @map("user_id") @db.Uuid
+  name         String
+  icon         String
+  type         TransationType
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Transaction {
+  id            String         @id @default(uuid()) @db.Uuid
+  userId        String         @map("user_id") @db.Uuid
+  bankAccountId String         @map("bank_account_id") @db.Uuid
+  categoryId    String?        @map("category_id") @db.Uuid
+  name          String
+  value         Float
+  date          DateTime
+  type          TransationType
+  bankAccount   BankAccount    @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+enum BankAccountType {
+  CHECKING
+  INVESTMENT
+  CASH
+
+  @@map("bank_account_type")
+}
+
+enum TransationType {
+  INCOME
+  EXPENSE
+
+  @@map("transation_type")
+}
