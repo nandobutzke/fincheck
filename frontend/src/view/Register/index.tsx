@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Input from "../components/Input";
+import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 
 export function Register() {
