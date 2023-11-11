@@ -8,6 +8,7 @@ export function Register() {
     register,
     handleSubmit,
     errors,
+    isPending,
   } = useRegisterController();
 
   return (
@@ -27,7 +28,7 @@ export function Register() {
         <Input type="email" placeholder="E-mail" error={errors.email?.message} {...register('email')} />
         <Input type="password" placeholder="Senha" error={errors.password?.message} {...register('password')} />
 
-        <Button type="submit" className="mt-2">
+        <Button type="submit" className="mt-2" isPending={isPending}>
           Criar conta
         </Button>
       </form>
