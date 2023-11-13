@@ -161,6 +161,13 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.49.0.tgz"
   integrity sha512-1S8uAY/MTJqVx0SC4epBq+N2yhuwtNwLbJYNZyhL2pO1ZVKn5HFXav5T41Ryzy9K9V7ZId2JB2oy/W4aCd9/2w==
 
+"@headlessui/react@^1.7.17":
+  version "1.7.17"
+  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.7.17.tgz#a0ec23af21b527c030967245fd99776aa7352bc6"
+  integrity sha512-4am+tzvkqDSSgiwrsEpGWqgGo9dz8qU5M3znCkC4PgkpY4HcCZzEDEvozltGGGHIKl9jbXbZPSH5TWn4sWJdow==
+  dependencies:
+    client-only "^0.0.1"
+
 "@hookform/resolvers@^3.3.2":
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-3.3.2.tgz#5c40f06fe8137390b071d961c66d27ee8f76f3bc"
@@ -325,6 +332,18 @@
   version "5.8.1"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.8.1.tgz#5215a028370d9b2f32e83787a0ea119e2f977996"
   integrity sha512-Y0enatz2zQXBAsd7XmajlCs+WaitdR7dIFkqz9Xd7HL4KV04JOigWVreYseTmNH7YFSBSC/BJ9uuNp1MAf+GfA==
+
+"@tanstack/query-devtools@5.8.3":
+  version "5.8.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-devtools/-/query-devtools-5.8.3.tgz#5e794e9aaa33d1c34bf14e34222b13f0cf818a45"
+  integrity sha512-tgVzqWpIg611UXqoIkyOLjEdrV3uNXg86kPrst0/OUP59znma68mOAHw8OEy/xxjN3t94InOfWhmVtkSQ9E8Lg==
+
+"@tanstack/react-query-devtools@^5.8.3":
+  version "5.8.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-devtools/-/react-query-devtools-5.8.3.tgz#fc754b49da95fe274f3498847f98be873e76a9a7"
+  integrity sha512-C36SQVh3wEjj+wEage2nyPBXQJj+gMqmbyXvUAVwywUjHC8OdpyYFkTiVQVRlPcxh+Td2qhsrn1IHPxd39YkrQ==
+  dependencies:
+    "@tanstack/query-devtools" "5.8.3"
 
 "@tanstack/react-query@^5.8.1":
   version "5.8.1"
@@ -619,6 +638,11 @@ chokidar@^3.5.3:
     readdirp "~3.6.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+client-only@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/client-only/-/client-only-0.0.1.tgz#38bba5d403c41ab150bff64a95c85013cf73bca1"
+  integrity sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==
 
 clsx@^2.0.0:
   version "2.0.0"
