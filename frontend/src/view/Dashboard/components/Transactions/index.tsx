@@ -7,10 +7,14 @@ import { SliderOption } from "./SliderOption";
 import { SliderNavigation } from "./SliderNavigation";
 import { formatCurrency } from "../../../../utils/formatCurrency";
 import { CategoryIcon } from "../../../components/icons/categories/CategoryIcon";
+import { useTransactionsController } from "./useTransactionsController";
+import cn from "../../../../utils/cn";
 
 export function Transactions() {
+  const { areValuesVisible } = useTransactionsController();
+
   return (
-    <div className="bg-gray-100 rounded-2xl w-full h-full p-10">
+    <div className="bg-gray-100 rounded-2xl w-full h-full p-10 flex flex-col">
       <header>
         <div className="flex items-centerv justify-between">
           <button className="flex items-center gap-2">
@@ -46,19 +50,42 @@ export function Transactions() {
         </div>
       </header>
 
-      <div className="mt-4">
+      <div className="mt-4 space-y-2 flex-1 overflow-y-auto">
+        <div className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4">
+          <div className="flex-1 flex items-center gap-3">
+            <CategoryIcon type="expense" />
+
+            <div>
+              <strong className="font-bold tracking-[-0.5px] block">Almoço</strong>
+              <span className="text-sm text-gray-600">18/11/2023</span>
+            </div>
+          </div>
+
+          <span className={cn(
+              'text-red-800 tracking-[-0.5px] font-medium',
+              !areValuesVisible && 'blur-sm'
+            )}
+          >
+            - {formatCurrency(132)}
+          </span>
+        </div>
+
         <div className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4">
           <div className="flex-1 flex items-center gap-3">
             <CategoryIcon type="income" />
 
-            <div className="flex flex-col">
-              <strong>Almoço</strong>
-              <span>18/11/2023</span>
+            <div>
+              <strong className="font-bold tracking-[-0.5px] block">Salário</strong>
+              <span className="text-sm text-gray-600">18/11/2023</span>
             </div>
           </div>
 
-          <span>
-            {formatCurrency(1320)}
+          <span className={cn(
+              'text-green-800 tracking-[-0.5px] font-medium',
+              !areValuesVisible && 'blur-sm'
+            )}
+          >
+            + {formatCurrency(4000)}
           </span>
         </div>
       </div>
