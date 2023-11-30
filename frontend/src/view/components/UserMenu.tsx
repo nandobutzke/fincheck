@@ -11,7 +11,10 @@ export function UserMenu() {
       </DropdownMenu.Trigger>
 
         <DropdownMenu.Content className="w-32">
-          <DropdownMenu.Item className="flex items-center justify-between">
+          <DropdownMenu.Item
+            onSelect={() => alert('Sair')}
+            className="flex items-center justify-between"
+          >
             Sair
             <ExitIcon className="w-6" />
           </DropdownMenu.Item>

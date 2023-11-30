@@ -23,7 +23,7 @@ export function App() {
 
       <Toaster />
 
-      <ReactQueryDevtools />
+      <ReactQueryDevtools buttonPosition="bottom-left" />
     </QueryClientProvider>
   );
 }
