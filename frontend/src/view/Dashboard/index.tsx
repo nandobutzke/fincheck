@@ -1,10 +1,10 @@
 import { Logo } from "../components/Logo";
-import { Modal } from "../components/Modal";
 import { UserMenu } from "../components/UserMenu";
 import { Accounts } from "./components/Accounts";
 import { DashboardProvider } from "./components/DasboardContext";
 import { Fab } from "./components/Fab";
 import { Transactions } from "./components/Transactions";
+import { NewAccountModal } from "./modals/NewAccountModal";
 
 export function Dashboard() {
   return (
@@ -25,9 +25,7 @@ export function Dashboard() {
         </main>
 
         <Fab />
-        <Modal open title="Receitas">
-          teste
-        </Modal>
+        <NewAccountModal />
       </div>
     </DashboardProvider>
   );

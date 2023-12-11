@@ -14,6 +14,7 @@ function DropdownMenuTrigger({ children }: { children: ReactNode }) {
   return (
     <RdxDropdownMenu.Trigger
       className="outline-none"
+      asChild
     >
       {children}
     </RdxDropdownMenu.Trigger>
