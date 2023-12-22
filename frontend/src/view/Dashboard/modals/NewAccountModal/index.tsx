@@ -32,7 +32,10 @@ export function NewAccountModal() {
             placeholder="Nome da conta"
           />
 
-          <Select />
+          <Select
+            placeholder="Selecione uma fruta"
+            error="Você precisa excolher!"
+          />
         </div>
       </form>
     </Modal>

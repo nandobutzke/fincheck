@@ -1,92 +1,86 @@
-import React from 'react';
 import * as RdxSelect from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
+import { ChevronDownIcon, ChevronUpIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 import cn from "../../utils/cn";
+import { useState } from "react";
 
-
-
-export function Select() {
-  return (
-    <RdxSelect.Root>
-      <RdxSelect.Trigger
-        className={cn(
-          'bg-white w-full px-3 border border-gray-500 rounded-lg h-[52px] focus:border-gray-800 transition-all outline-none text-left relative',
-          // error && '!border-red-900',
-          //className,
-        )}
-      >
-        <RdxSelect.Value />
-        <RdxSelect.Icon className="absolute right-3 bottom-3">
-          <ChevronDownIcon className="w-6 h-6 text-gray-800" />
-        </RdxSelect.Icon>
-      </RdxSelect.Trigger>
-      <RdxSelect.Portal>
-        <RdxSelect.Content className="z-[99] overflow-hidden bg-white rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]">
-          <RdxSelect.ScrollUpButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
-            <ChevronUpIcon />
-          </RdxSelect.ScrollUpButton>
-          <RdxSelect.Viewport className="p-[5px]">
-            <RdxSelect.Group>
-              <RdxSelect.Label className="px-[25px] text-xs leading-[25px] text-mauve11">
-                Fruits
-              </RdxSelect.Label>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="blueberry">Blueberry</SelectItem>
-              <SelectItem value="grapes">Grapes</SelectItem>
-              <SelectItem value="pineapple">Pineapple</SelectItem>
-            </RdxSelect.Group>
-
-            <RdxSelect.Separator className="h-[1px] bg-violet6 m-[5px]" />
-
-            <RdxSelect.Group>
-              <RdxSelect.Label className="px-[25px] text-xs leading-[25px] text-mauve11">
-                Vegetables
-              </RdxSelect.Label>
-              <SelectItem value="aubergine">Aubergine</SelectItem>
-              <SelectItem value="broccoli">Broccoli</SelectItem>
-              <SelectItem value="carrot" disabled>
-                Carrot
-              </SelectItem>
-              <SelectItem value="courgette">Courgette</SelectItem>
-              <SelectItem value="leek">Leek</SelectItem>
-            </RdxSelect.Group>
-
-            <RdxSelect.Separator className="h-[1px] bg-violet6 m-[5px]" />
-
-            <RdxSelect.Group>
-              <RdxSelect.Label className="px-[25px] text-xs leading-[25px] text-mauve11">
-                Meat
-              </RdxSelect.Label>
-              <SelectItem value="beef">Beef</SelectItem>
-              <SelectItem value="chicken">Chicken</SelectItem>
-              <SelectItem value="lamb">Lamb</SelectItem>
-              <SelectItem value="pork">Pork</SelectItem>
-            </RdxSelect.Group>
-          </RdxSelect.Viewport>
-          <RdxSelect.ScrollDownButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
-            <ChevronDownIcon />
-          </RdxSelect.ScrollDownButton>
-        </RdxSelect.Content>
-      </RdxSelect.Portal>
-    </RdxSelect.Root>
-  );
+interface SelectProps {
+  className?: string;
+  error?: string;
+  placeholder?: string;
 }
 
-const SelectItem = React.forwardRef(({ children, className, ...props }, forwardedRef) => {
+export function Select({ className, placeholder, error }: SelectProps) {
+  const [selectedValue, setSelectedValue] = useState('');
+
+  function handleSelect(value: string) {
+    setSelectedValue(value);
+  }
+
   return (
-    <RdxSelect.Item
-      className={cn(
-        'text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1',
-        className
+    <div>
+      <div className="relative">
+        <label className={cn(
+          'absolute z-10 top-1/2 -translate-y-1/2 left-3 text-gray-700 pointer-events-none',
+          selectedValue && 'text-xs left-[13px] top-2 translate-y-0 transition-all'
+        )}>
+          {placeholder}
+        </label>
+        <RdxSelect.Root onValueChange={handleSelect}>
+          <RdxSelect.Trigger
+            className={cn(
+              'bg-white w-full px-3 border border-gray-500 rounded-lg h-[52px] focus:border-gray-800 transition-all outline-none text-left relative pt-4',
+              error && '!border-red-900',
+              className,
+            )}
+          >
+            <RdxSelect.Value />
+            <RdxSelect.Icon className="absolute right-3 top-1/2 -translate-y-1/2">
+              <ChevronDownIcon className="w-6 h-6 text-gray-800" />
+            </RdxSelect.Icon>
+          </RdxSelect.Trigger>
+          <RdxSelect.Portal>
+            <RdxSelect.Content className="z-[99] overflow-hidden bg-white rounded-2xl border border-gray-100 shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)]">
+              <RdxSelect.ScrollUpButton
+                className="flex items-center justify-center h-[25px] bg-white cursor-default text-gray-800"
+              >
+                <ChevronUpIcon />
+              </RdxSelect.ScrollUpButton>
+              <RdxSelect.Viewport className="p-2">
+                <RdxSelect.Item
+                  value="Banana"
+                  className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <RdxSelect.ItemText>Banana</RdxSelect.ItemText>
+                </RdxSelect.Item>
+                <RdxSelect.Item
+                  value="Uva"
+                  className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <RdxSelect.ItemText>Uva</RdxSelect.ItemText>
+                </RdxSelect.Item>
+                <RdxSelect.Item
+                  value="Maçã"
+                  className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <RdxSelect.ItemText>Maçã</RdxSelect.ItemText>
+                </RdxSelect.Item>
+              </RdxSelect.Viewport>
+              <RdxSelect.ScrollDownButton
+                className="flex items-center justify-center h-[25px] bg-white text-gray-800 cursor-default"
+              >
+                <ChevronDownIcon />
+              </RdxSelect.ScrollDownButton>
+            </RdxSelect.Content>
+          </RdxSelect.Portal>
+        </RdxSelect.Root>
+      </div>
+
+      {error && (
+        <div className="flex items-center gap-2 text-red-900 mt-2">
+          <CrossCircledIcon />
+          <span className="text-xs">{error}</span>
+        </div>
       )}
-      {...props}
-      ref={forwardedRef}
-    >
-      <RdxSelect.ItemText>{children}</RdxSelect.ItemText>
-      <RdxSelect.ItemIndicator className="absolute left-0 w-[25px] inline-flex items-center justify-center">
-        <CheckIcon />
-     </RdxSelect.ItemIndicator>
-    </RdxSelect.Item>
+    </div>
   );
-});
+}
