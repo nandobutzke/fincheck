@@ -4,9 +4,10 @@ import { DropdownMenu } from "../../../components/DropdownMenu";
 import { CategoryIcon } from "../../../components/icons/categories/CategoryIcon";
 import { BankAccountIcon } from "../../../components/icons/BankAccountIcon";
 import { useDashboard } from "../DasboardContext/useDashboard";
+import { TransactionType } from "../../../../enums/TransactionType";
 
 export function Fab() {
-  const { openNewAccountModal } = useDashboard();
+  const { openNewAccountModal, openNewTransactionModal } = useDashboard();
 
   return (
     <div className="fixed right-4 bottom-4">
@@ -18,12 +19,12 @@ export function Fab() {
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Content>
-          <DropdownMenu.Item className="gap-2">
-            <CategoryIcon type="expense" />
+          <DropdownMenu.Item className="gap-2" onSelect={() => openNewTransactionModal(TransactionType.EXPENSE)}>
+            <CategoryIcon type={TransactionType.EXPENSE} />
             Nova Despesa
           </DropdownMenu.Item>
-          <DropdownMenu.Item className="gap-2">
-            <CategoryIcon type="income" />
+          <DropdownMenu.Item className="gap-2" onSelect={() => openNewTransactionModal(TransactionType.INCOME)}>
+            <CategoryIcon type={TransactionType.INCOME} />
             Nova Receita
           </DropdownMenu.Item>
           <DropdownMenu.Item className="gap-2" onSelect={openNewAccountModal}>

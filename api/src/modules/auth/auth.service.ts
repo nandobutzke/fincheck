@@ -4,6 +4,7 @@ import { UsersRepository } from 'src/shared/database/repositories/users.reposito
 import { compare, hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { SignupDto } from './dtos/signup.dto';
+import { TransactionType } from "../transactions/entities/Transaction";
 
 @Injectable()
 export class AuthService {
@@ -57,19 +58,19 @@ export class AuthService {
           createMany: {
             data: [
               // Income
-              { name: 'Salário', icon: 'salary', type: 'INCOME' },
-              { name: 'Freelance', icon: 'freelance', type: 'INCOME' },
-              { name: 'Outro', icon: 'other', type: 'INCOME' },
+              { name: 'Salário', icon: 'salary', type: TransactionType.INCOME },
+              { name: 'Freelance', icon: 'freelance', type: TransactionType.INCOME },
+              { name: 'Outro', icon: 'other', type: TransactionType.INCOME },
               // Expense
-              { name: 'Casa', icon: 'home', type: 'EXPENSE' },
-              { name: 'Alimentação', icon: 'food', type: 'EXPENSE' },
-              { name: 'Educação', icon: 'education', type: 'EXPENSE' },
-              { name: 'Lazer', icon: 'fun', type: 'EXPENSE' },
-              { name: 'Mercado', icon: 'grocery', type: 'EXPENSE' },
-              { name: 'Roupas', icon: 'clothes', type: 'EXPENSE' },
-              { name: 'Transporte', icon: 'transport', type: 'EXPENSE' },
-              { name: 'Viagem', icon: 'travel', type: 'EXPENSE' },
-              { name: 'Outro', icon: 'other', type: 'EXPENSE' },
+              { name: 'Casa', icon: 'home', type: TransactionType.EXPENSE },
+              { name: 'Alimentação', icon: 'food', type: TransactionType.EXPENSE },
+              { name: 'Educação', icon: 'education', type: TransactionType.EXPENSE },
+              { name: 'Lazer', icon: 'fun', type: TransactionType.EXPENSE },
+              { name: 'Mercado', icon: 'grocery', type: TransactionType.EXPENSE },
+              { name: 'Roupas', icon: 'clothes', type: TransactionType.EXPENSE },
+              { name: 'Transporte', icon: 'transport', type: TransactionType.EXPENSE },
+              { name: 'Viagem', icon: 'travel', type: TransactionType.EXPENSE },
+              { name: 'Outro', icon: 'other', type: TransactionType.EXPENSE },
             ]
           }
         }

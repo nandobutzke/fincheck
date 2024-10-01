@@ -11,6 +11,8 @@ import { Spinner } from "../../../components/Spinner";
 import emptyStateImage from '../../../../assets/empty-state.svg';
 import { TransactionTypeDropdown } from "./TransactionTypeDropdown";
 import { FiltersModal } from "./FiltersModal";
+import { TransactionType } from "../../../../enums/TransactionType";
+import { formatDate } from "../../../../utils/formatDate";
 
 export function Transactions() {
   const {
@@ -18,9 +20,12 @@ export function Transactions() {
     transactions,
     isInitialLoading,
     isLoading,
+    handleChangeFilters,
+    handleApplyFilters,
     isFiltersModalOpen,
     handleOpenFiltersModal,
-    handleCloseFiltersModal
+    handleCloseFiltersModal,
+    filters
   } = useTransactionsController();
 
   const hasTransactions = transactions.length > 0;
@@ -35,10 +40,17 @@ export function Transactions() {
 
       {!isInitialLoading && (
         <>
-          <FiltersModal open={isFiltersModalOpen} onClose={handleCloseFiltersModal} />
+          <FiltersModal
+            open={isFiltersModalOpen}
+            onClose={handleCloseFiltersModal}
+            onApplyFilters={handleApplyFilters}
+          />
           <header>
-            <div className="flex items-centerv justify-between">
-              <TransactionTypeDropdown />
+            <div className="flex items-center justify-between">
+              <TransactionTypeDropdown
+                onSelect={handleChangeFilters('type')}
+                selectedType={filters.type}
+              />
               <button onClick={handleOpenFiltersModal}>
                 <FilterIcon />
               </button>
@@ -48,6 +60,11 @@ export function Transactions() {
               <Swiper
                 slidesPerView={3}
                 centeredSlides
+                initialSlide={filters.month}
+                onSlideChange={swiper => {
+                  if (swiper.realIndex === filters.month) return;
+                  handleChangeFilters('month')(swiper.realIndex)
+                }}
               >
                 <SliderNavigation />
 
@@ -82,47 +99,37 @@ export function Transactions() {
               </div>
             )}
 
-            {hasTransactions && !isLoading && (
-              <>
-                <div className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4">
-                  <div className="flex-1 flex items-center gap-3">
-                    <CategoryIcon type="expense" />
-
-                    <div>
-                      <strong className="font-bold tracking-[-0.5px] block">Almoço</strong>
-                      <span className="text-sm text-gray-600">18/11/2023</span>
-                    </div>
-                  </div>
-
-                  <span className={cn(
-                      'text-red-800 tracking-[-0.5px] font-medium',
-                      !areValuesVisible && 'blur-sm'
-                    )}
+            {hasTransactions && !isLoading && transactions.map(transaction => (
+                  <div
+                    key={transaction.id}
+                    className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4"
                   >
-                    - {formatCurrency(132)}
-                  </span>
-                </div>
+                    <div className="flex-1 flex items-center gap-3">
+                      <CategoryIcon
+                        type={transaction.type}
 
-                <div className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4">
-                  <div className="flex-1 flex items-center gap-3">
-                    <CategoryIcon type="income" />
+                      />
 
-                    <div>
-                      <strong className="font-bold tracking-[-0.5px] block">Salário</strong>
-                      <span className="text-sm text-gray-600">18/11/2023</span>
+                      <div>
+                        <strong className="font-bold tracking-[-0.5px] block">
+                          {transaction.name}
+                        </strong>
+                        <span className="text-sm text-gray-600">
+                          {formatDate(new Date(transaction.date))}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <span className={cn(
-                      'text-green-800 tracking-[-0.5px] font-medium',
-                      !areValuesVisible && 'blur-sm'
-                    )}
-                  >
-                    + {formatCurrency(4000)}
-                  </span>
-                </div>
-              </>
-            )}
+                    <span className={cn(
+                        'tracking-[-0.5px] font-medium',
+                        !areValuesVisible && 'blur-sm',
+                        transaction.type === TransactionType.EXPENSE ? 'text-red-800' : 'text-green-800'
+                      )}
+                    >
+                      {transaction.type === TransactionType.EXPENSE ? '-' : '+'} {formatCurrency(transaction.value)}
+                    </span>
+                  </div>
+                ))}
 
           </div>
         </>

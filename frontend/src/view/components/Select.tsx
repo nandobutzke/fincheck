@@ -7,13 +7,20 @@ interface SelectProps {
   className?: string;
   error?: string;
   placeholder?: string;
+  options: {
+    value: string;
+    label: string;
+  }[];
+  value?: string;
+  onChange?(value: string): void;
 }
 
-export function Select({ className, placeholder, error }: SelectProps) {
-  const [selectedValue, setSelectedValue] = useState('');
+export function Select({ className, placeholder, error, options, value, onChange }: SelectProps) {
+  const [selectedValue, setSelectedValue] = useState(value ?? '');
 
   function handleSelect(value: string) {
     setSelectedValue(value);
+    onChange?.(value)
   }
 
   return (
@@ -25,7 +32,7 @@ export function Select({ className, placeholder, error }: SelectProps) {
         )}>
           {placeholder}
         </label>
-        <RdxSelect.Root onValueChange={handleSelect}>
+        <RdxSelect.Root value={value} onValueChange={handleSelect}>
           <RdxSelect.Trigger
             className={cn(
               'bg-white w-full px-3 border border-gray-500 rounded-lg h-[52px] focus:border-gray-800 transition-all outline-none text-left relative pt-4',
@@ -46,24 +53,15 @@ export function Select({ className, placeholder, error }: SelectProps) {
                 <ChevronUpIcon />
               </RdxSelect.ScrollUpButton>
               <RdxSelect.Viewport className="p-2">
-                <RdxSelect.Item
-                  value="Banana"
-                  className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <RdxSelect.ItemText>Banana</RdxSelect.ItemText>
-                </RdxSelect.Item>
-                <RdxSelect.Item
-                  value="Uva"
-                  className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <RdxSelect.ItemText>Uva</RdxSelect.ItemText>
-                </RdxSelect.Item>
-                <RdxSelect.Item
-                  value="Maçã"
-                  className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <RdxSelect.ItemText>Maçã</RdxSelect.ItemText>
-                </RdxSelect.Item>
+                {options.map((option) => (
+                  <RdxSelect.Item
+                    key={option.value}
+                    value={option.value}
+                    className="p-2 text-gray-800 text-sm data-[state=checked]:font-bold outline-none data-[highlighted]:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    <RdxSelect.ItemText>{option.label}</RdxSelect.ItemText>
+                  </RdxSelect.Item>
+                ))}
               </RdxSelect.Viewport>
               <RdxSelect.ScrollDownButton
                 className="flex items-center justify-center h-[25px] bg-white text-gray-800 cursor-default"

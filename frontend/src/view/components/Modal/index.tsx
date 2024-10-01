@@ -7,7 +7,7 @@ interface ModalProps {
   children: React.ReactNode;
   title: string;
   rightAction?: React.ReactNode;
-  onClose(): void;
+  onClose?(): void;
 }
 
 export function Modal({ open, children, title, rightAction, onClose }: ModalProps) {

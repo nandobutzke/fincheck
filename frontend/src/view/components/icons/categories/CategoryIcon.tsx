@@ -1,7 +1,8 @@
+import { TransactionType } from "../../../../enums/TransactionType";
 import { iconsMap } from "./iconsMap";
 
 interface CategoryIconProps {
-  type: 'income' | 'expense';
+  type: TransactionType.INCOME | TransactionType.EXPENSE;
   category?: string;
 }
 
