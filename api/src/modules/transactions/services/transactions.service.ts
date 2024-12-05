@@ -69,8 +69,7 @@ export class TransactionsService {
   }
 
   async update(userId: string, transactionId: string, updateTransactionDto: UpdateTransactionDto) {
-    const { bankAccountId, categoryId } = updateTransactionDto;
-
+    const { bankAccountId, categoryId, name, value, type, date } = updateTransactionDto;
 
     await this.validateEntitiesOwnership({
       userId,
@@ -79,7 +78,17 @@ export class TransactionsService {
       transactionId,
     });
 
-    return `This action updates a #${transactionId} transaction`;
+    return this.transactionsRepo.update({
+      where: { id: transactionId },
+      data: {
+        name,
+        value,
+        type,
+        date,
+        bankAccountId,
+        categoryId
+      }
+    });
   }
 
   async remove(userId: string, transactionId: string) {
@@ -88,7 +97,11 @@ export class TransactionsService {
       transactionId
     });
 
-    return `This action removes a #${transactionId} transaction`;
+    await this.transactionsRepo.delete({
+      where: { id: transactionId }
+    });
+
+    return null;
   }
 
   private async validateEntitiesOwnership({

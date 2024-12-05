@@ -13,6 +13,7 @@ import { TransactionTypeDropdown } from "./TransactionTypeDropdown";
 import { FiltersModal } from "./FiltersModal";
 import { TransactionType } from "../../../../enums/TransactionType";
 import { formatDate } from "../../../../utils/formatDate";
+import { EditTransactionModal } from "../../modals/EditTransactionModal";
 
 export function Transactions() {
   const {
@@ -25,7 +26,11 @@ export function Transactions() {
     isFiltersModalOpen,
     handleOpenFiltersModal,
     handleCloseFiltersModal,
-    filters
+    filters,
+    isEditModalOpen,
+    handleCloseEditModal,
+    handleOpenEditModal,
+    transactionBeingEdited,
   } = useTransactionsController();
 
   const hasTransactions = transactions.length > 0;
@@ -99,15 +104,25 @@ export function Transactions() {
               </div>
             )}
 
-            {hasTransactions && !isLoading && transactions.map(transaction => (
+            {hasTransactions && !isLoading && (
+              <>
+                {transactionBeingEdited && (
+                  <EditTransactionModal
+                    transaction={transactionBeingEdited}
+                    open={isEditModalOpen}
+                    onClose={handleCloseEditModal}
+                  />
+                )}
+
+                {transactions.map(transaction => (
                   <div
+                    onClick={() => handleOpenEditModal(transaction)}
                     key={transaction.id}
-                    className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4"
+                    className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4 cursor-pointer"
                   >
                     <div className="flex-1 flex items-center gap-3">
                       <CategoryIcon
                         type={transaction.type}
-
                       />
 
                       <div>
@@ -130,6 +145,8 @@ export function Transactions() {
                     </span>
                   </div>
                 ))}
+              </>
+            )}
 
           </div>
         </>

@@ -37,7 +37,7 @@ export function useNewTransactionModalController() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      date: new Date(2024, 2, 13)
+      date: new Date()
     }
   });
 
@@ -62,7 +62,8 @@ export function useNewTransactionModalController() {
         date: data.date.toISOString()
       })
 
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
       toast.success(
         newTransactionType === TransactionType.EXPENSE
         ? 'Despesa cadastrada com sucesso!'

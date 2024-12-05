@@ -1,8 +1,7 @@
+import { User } from "../../app/entities/User";
 import { httpClient } from "../httpClient";
 
-interface MeResponse {
-  accessToken: string;
-}
+type MeResponse = User;
 
 export async function me() {
   const { data } = await httpClient.get<MeResponse>('/users/me');

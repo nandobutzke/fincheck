@@ -12,8 +12,6 @@ export class UsersController {
   @Get('me')
   @UseGuards(AuthGuard)
   me(@ActiveUserId() userId: string) {
-    console.log({ userId })
-
     return this.usersService.getUserById(userId);
   }
 }

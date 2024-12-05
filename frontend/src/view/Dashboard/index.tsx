@@ -6,7 +6,7 @@ import { Fab } from "./components/Fab";
 import { Transactions } from "./components/Transactions";
 import { EditAccountModal } from "./modals/EditAccountModal";
 import { NewAccountModal } from "./modals/NewAccountModal";
-import { NewTransactionModal } from "./modals/NewTransactionsModal";
+import { NewTransactionModal } from "./modals/NewTransactionModal";
 
 export function Dashboard() {
   return (
