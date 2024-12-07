@@ -3,7 +3,7 @@ import { httpClient } from "../httpClient";
 export interface UpdateBankAccountParams {
   id: string;
   name: string;
-  initialBalance: number;
+  balance: number;
   color: string;
   type: 'CHECKING' | 'INVESTMENT' | 'CASH';
 }

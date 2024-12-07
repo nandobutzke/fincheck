@@ -1,6 +1,6 @@
 import { createContext, useCallback, useState } from "react";
-import { BankAccount } from "../../../../app/entities/bankAccount";
 import { TransactionType } from "../../../../enums/TransactionType";
+import { BankAccount } from "../../../../app/entities/BankAccount";
 
 interface DashboardContextValue {
   areValuesVisible: boolean;

@@ -8,7 +8,7 @@ export class CreateBankAccountDto {
 
   @IsNumber()
   @IsNotEmpty()
-  initialBalance: number;
+  balance: number;
 
   @IsNotEmpty()
   @IsEnum(BankAccountType)

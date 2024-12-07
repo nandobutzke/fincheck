@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 
 const schema = z.object({
-  initialBalance: z.union([
+  balance: z.union([
     z.string().min(1, 'Saldo inicial é obrigatório.'),
     z.number()
   ]),
@@ -39,7 +39,7 @@ export function useEditAccountModalController() {
       name: accountBeingEdited?.name,
       type: accountBeingEdited?.type,
       color: accountBeingEdited?.color,
-      initialBalance: accountBeingEdited?.initialBalance
+      balance: accountBeingEdited?.balance
     }
   });
 
@@ -65,7 +65,7 @@ export function useEditAccountModalController() {
     try {
       await updateAccount({
         ...data,
-        initialBalance: currencyStringToNumber(data.initialBalance),
+        balance: currencyStringToNumber(data.balance),
         id: accountBeingEdited!.id
       });
 
@@ -91,6 +91,7 @@ export function useEditAccountModalController() {
       await removeAccount(accountBeingEdited!.id);
 
       queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success('A conta foi deletada com sucesso!');
       closeEditAccountModal();
       reset();

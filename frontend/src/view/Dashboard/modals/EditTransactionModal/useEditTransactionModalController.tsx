@@ -67,8 +67,6 @@ export function useEditTransactionModalController(
     try {
       if (!transaction) return;
 
-      console.log(data)
-
       await updateTransaction({
         ...data,
         id: transaction.id,
@@ -79,7 +77,6 @@ export function useEditTransactionModalController(
 
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
-
       toast.success(
         transaction!.type === TransactionType.EXPENSE
         ? 'Despesa editada com sucesso!'

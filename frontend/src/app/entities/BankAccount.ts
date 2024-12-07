@@ -1,8 +1,7 @@
 export interface BankAccount {
   id: string;
   name: string;
-  initialBalance: number;
+  balance: number;
   type: 'CHECKING' | 'INVESTMENT' | 'CASH'
   color: string;
-  currentBalance: number;
 }

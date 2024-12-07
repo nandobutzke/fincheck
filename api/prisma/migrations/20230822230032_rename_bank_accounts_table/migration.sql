@@ -12,7 +12,7 @@ CREATE TABLE "bank_accounts" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
     "name" TEXT NOT NULL,
-    "initial_balance" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
     "type" "bank_account_type" NOT NULL,
     "color" TEXT NOT NULL,
 

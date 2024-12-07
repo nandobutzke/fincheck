@@ -11,6 +11,7 @@ import { TransactionType } from "../../../../enums/TransactionType";
 export function NewTransactionModal() {
   const {
     closeNewTransactionModal,
+    reset,
     isNewTransactionModalOpen,
     newTransactionType,
     control,
@@ -24,11 +25,16 @@ export function NewTransactionModal() {
 
   const isExpense = newTransactionType === TransactionType.EXPENSE;
 
+  function handleClose() {
+    closeNewTransactionModal();
+    reset();
+  }
+
   return (
     <Modal
       title={isExpense ? 'Nova Despesa' : 'Nova Receita'}
       open={isNewTransactionModalOpen}
-      onClose={closeNewTransactionModal}
+      onClose={handleClose}
     >
       <form onSubmit={handleSubmit}>
         <div>

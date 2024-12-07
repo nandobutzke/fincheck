@@ -1,7 +1,7 @@
 /*
   Warnings:
 
-  - Changed the type of `initial_balance` on the `bank_accounts` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
+  - Changed the type of `balance` on the `bank_accounts` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
 
 */
 -- CreateEnum
@@ -11,8 +11,8 @@ CREATE TYPE "transation_type" AS ENUM ('INCOME', 'EXPENSE');
 ALTER TABLE "bank_accounts" DROP CONSTRAINT "bank_accounts_user_id_fkey";
 
 -- AlterTable
-ALTER TABLE "bank_accounts" DROP COLUMN "initial_balance",
-ADD COLUMN     "initial_balance" DOUBLE PRECISION NOT NULL;
+ALTER TABLE "bank_accounts" DROP COLUMN "balance",
+ADD COLUMN     "balance" DOUBLE PRECISION NOT NULL;
 
 -- CreateTable
 CREATE TABLE "categories" (

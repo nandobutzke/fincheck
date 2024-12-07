@@ -10,6 +10,7 @@ import { useNewAccountModalController } from "./useNewAccountModalController";
 export function NewAccountModal() {
   const {
     closeNewAccountModal,
+    reset,
     isNewAccountModalOpen,
     register,
     errors,
@@ -18,11 +19,16 @@ export function NewAccountModal() {
     isPending
   } = useNewAccountModalController();
 
+  function handleClose() {
+    closeNewAccountModal();
+    reset();
+  }
+
   return (
     <Modal
       title="Nova Conta"
       open={isNewAccountModalOpen}
-      onClose={closeNewAccountModal}
+      onClose={handleClose}
     >
       <form onSubmit={handleSubmit}>
         <div>
@@ -32,12 +38,12 @@ export function NewAccountModal() {
 
             <Controller
               control={control}
-              name="initialBalance"
+              name="balance"
               defaultValue="0"
               render={({ field: { onChange, value } }) => (
                 <InputCurrency
                   onChange={onChange}
-                  error={errors.initialBalance?.message}
+                  error={errors.balance?.message}
                   value={value}
                 />
               )}
@@ -93,8 +99,6 @@ export function NewAccountModal() {
               />
             )}
           />
-
-
         </div>
 
         <Button type="submit" className="w-full mt-6" isPending={isPending}>

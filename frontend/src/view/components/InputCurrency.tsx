@@ -14,6 +14,7 @@ export function InputCurrency({ error, value, onChange }: InputCurrencyProps) {
       <NumericFormat
         thousandSeparator="."
         decimalSeparator=","
+        fixedDecimalScale
         decimalScale={2}
         allowNegative={false}
         allowLeadingZeros={false}

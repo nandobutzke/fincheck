@@ -12,12 +12,12 @@ export class BankAccountsService {
   ) {}
 
   create(createBankAccountDto: CreateBankAccountDto, userId: string) {
-    const {name, initialBalance, color, type} = createBankAccountDto;
+    const {name, balance, color, type} = createBankAccountDto;
 
     return this.bankAccountsRepo.create({
       data: {
         name,
-        initialBalance,
+        balance,
         color,
         type,
         userId
@@ -49,13 +49,11 @@ export class BankAccountsService {
           : -transaction.value),
         0,
       );
-      const currentBalance = bankAccount.initialBalance + transactionsTotal;
 
       return {
         transactionsTotal,
         ...bankAccount,
-        transactions,
-        currentBalance
+        transactions
       }
     })
   }
@@ -67,19 +65,18 @@ export class BankAccountsService {
   ) {
     await this.validateBankAccountOwnershipService.validate(userId, bankAccountId);
 
-    const {name, initialBalance, color, type} = updateBankAccountDto;
+    const {name, balance, color, type} = updateBankAccountDto;
 
     return this.bankAccountsRepo.update({
       where: { id: bankAccountId },
       data: {
         name,
-        initialBalance,
+        balance,
         color,
         type
       }
     });
   }
-
 
   async remove(
     userId: string,

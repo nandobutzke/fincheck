@@ -6,11 +6,14 @@ import { ValidateBankAccountOwnershipService } from '../../bank-accounts/service
 import { ValidateCategoryOwnershipService } from '../../categories/services/validate-category-ownership.service';
 import { ValidateTransactionOwnershipService } from '../services/validate-transaction-ownership.service';
 import { TransactionType } from "../entities/Transaction";
+import { BankAccountsRepository } from "src/shared/database/repositories/bankAccounts.repository";
+import { $Enums } from "@prisma/client";
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
+    private readonly bankAccountsRepo: BankAccountsRepository,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService
@@ -25,6 +28,10 @@ export class TransactionsService {
       categoryId
     });
 
+    const currentBalance = await this.validateBalanceAccountUpdate(bankAccountId, value, type);
+
+    await this.bankAccountsRepo.updateBalance(bankAccountId, currentBalance);
+
     return this.transactionsRepo.create({
       data: {
         userId,
@@ -36,6 +43,24 @@ export class TransactionsService {
         type
       }
     });
+  }
+
+  private async validateBalanceAccountUpdate(bankAccountId: string, value: number, type: TransactionType) {
+    const { balance } = await this.bankAccountsRepo.findFirst({
+      where: {
+        id: bankAccountId
+      }
+    });
+
+    let currentBalance = balance;
+
+    if (type === TransactionType.EXPENSE) {
+      currentBalance -= value;
+    } else {
+      currentBalance += value;
+    }
+
+    return currentBalance;
   }
 
   findAllByUserId(
@@ -78,6 +103,8 @@ export class TransactionsService {
       transactionId,
     });
 
+    await this.validateBalanceAfterUpdatingTransactions(transactionId, bankAccountId, type, value)
+
     return this.transactionsRepo.update({
       where: { id: transactionId },
       data: {
@@ -88,7 +115,24 @@ export class TransactionsService {
         bankAccountId,
         categoryId
       }
+    });;
+  }
+
+  private async validateBalanceAfterUpdatingTransactions(
+    transactionId: string,
+    bankAccountId: string,
+    type: TransactionType,
+    updatedValue: number
+  ) {
+    const transactionBeingUpdated = await this.transactionsRepo.findFirst({
+      where: { id: transactionId }
     });
+
+    const valueForBalanceCalculation = -(transactionBeingUpdated.value - updatedValue);
+
+    const currentBalance = await this.validateBalanceAccountUpdate(bankAccountId, valueForBalanceCalculation, type);
+
+    await this.bankAccountsRepo.updateBalance(bankAccountId, currentBalance);
   }
 
   async remove(userId: string, transactionId: string) {
@@ -96,6 +140,19 @@ export class TransactionsService {
       userId,
       transactionId
     });
+
+    const transactionBeingDeleted = await this.transactionsRepo.findFirst({
+      where: { id: transactionId }
+    });
+
+    const { bankAccountId, type, value } = transactionBeingDeleted;
+
+    await this.validateBalanceAfterUpdatingTransactions(
+      transactionId,
+      bankAccountId,
+      type as TransactionType,
+      value
+    );
 
     await this.transactionsRepo.delete({
       where: { id: transactionId }

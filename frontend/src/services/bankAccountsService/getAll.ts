@@ -1,4 +1,4 @@
-import { BankAccount } from "../../app/entities/bankAccount";
+import { BankAccount } from "../../app/entities/BankAccount";
 import { httpClient } from "../httpClient";
 
 type BankAccountsResponse = Array<BankAccount>
