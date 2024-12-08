@@ -28,9 +28,12 @@ export class TransactionsService {
       categoryId
     });
 
-    const currentBalance = await this.validateBalanceAccountUpdate(bankAccountId, value, type);
-
-    await this.bankAccountsRepo.updateBalance(bankAccountId, currentBalance);
+    await this.calculateNewBalanceBankAccountAndUpdate(
+      bankAccountId,
+      type,
+      value,
+      true
+    );
 
     return this.transactionsRepo.create({
       data: {
@@ -43,24 +46,6 @@ export class TransactionsService {
         type
       }
     });
-  }
-
-  private async validateBalanceAccountUpdate(bankAccountId: string, value: number, type: TransactionType) {
-    const { balance } = await this.bankAccountsRepo.findFirst({
-      where: {
-        id: bankAccountId
-      }
-    });
-
-    let currentBalance = balance;
-
-    if (type === TransactionType.EXPENSE) {
-      currentBalance -= value;
-    } else {
-      currentBalance += value;
-    }
-
-    return currentBalance;
   }
 
   findAllByUserId(
@@ -103,9 +88,11 @@ export class TransactionsService {
       transactionId,
     });
 
-    await this.validateBalanceAfterUpdatingTransactions(transactionId, bankAccountId, type, value)
+    const { value: oldValue } = await this.transactionsRepo.findFirst({
+      where: { id: transactionId }
+    });
 
-    return this.transactionsRepo.update({
+    const updatedTransaction = await this.transactionsRepo.update({
       where: { id: transactionId },
       data: {
         name,
@@ -115,24 +102,17 @@ export class TransactionsService {
         bankAccountId,
         categoryId
       }
-    });;
-  }
-
-  private async validateBalanceAfterUpdatingTransactions(
-    transactionId: string,
-    bankAccountId: string,
-    type: TransactionType,
-    updatedValue: number
-  ) {
-    const transactionBeingUpdated = await this.transactionsRepo.findFirst({
-      where: { id: transactionId }
     });
 
-    const valueForBalanceCalculation = -(transactionBeingUpdated.value - updatedValue);
+    const difference = oldValue - value;
 
-    const currentBalance = await this.validateBalanceAccountUpdate(bankAccountId, valueForBalanceCalculation, type);
+    await this.calculateNewBalanceBankAccountAndUpdate(
+      bankAccountId,
+      type,
+      difference
+    );
 
-    await this.bankAccountsRepo.updateBalance(bankAccountId, currentBalance);
+    return updatedTransaction;
   }
 
   async remove(userId: string, transactionId: string) {
@@ -141,24 +121,52 @@ export class TransactionsService {
       transactionId
     });
 
-    const transactionBeingDeleted = await this.transactionsRepo.findFirst({
-      where: { id: transactionId }
-    });
+    const { bankAccountId, type, value } = await this.transactionsRepo.findFirst({
+      where: {
+        id: transactionId
+      }
+    })
 
-    const { bankAccountId, type, value } = transactionBeingDeleted;
-
-    await this.validateBalanceAfterUpdatingTransactions(
-      transactionId,
+    await this.calculateNewBalanceBankAccountAndUpdate(
       bankAccountId,
       type as TransactionType,
       value
-    );
+    )
 
     await this.transactionsRepo.delete({
       where: { id: transactionId }
     });
 
     return null;
+  }
+
+  private async calculateNewBalanceBankAccountAndUpdate(
+    bankAccountId: string,
+    transactionType: TransactionType,
+    difference: number,
+    isCreatingTransaction = false
+  ) {
+    const { balance } = await this.bankAccountsRepo.findFirst({
+      where: {
+        id: bankAccountId
+      }
+    });
+
+    let adjustmentForTheBalanceAccount = 0;
+
+    const isExpense = transactionType === TransactionType.EXPENSE
+    const adjustmentOnCreatingTransaction = isCreatingTransaction ? -difference : difference;
+    const adjustmentOnDeletingOrUpdatingTransaction = isCreatingTransaction ? difference : -difference;
+
+    if (isExpense) {
+      adjustmentForTheBalanceAccount = adjustmentOnCreatingTransaction
+    } else {
+      adjustmentForTheBalanceAccount = adjustmentOnDeletingOrUpdatingTransaction
+    }
+
+    const currentBalance = balance + adjustmentForTheBalanceAccount;
+
+    await this.bankAccountsRepo.updateBalance(bankAccountId, currentBalance);
   }
 
   private async validateEntitiesOwnership({
