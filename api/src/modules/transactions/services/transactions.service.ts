@@ -143,7 +143,7 @@ export class TransactionsService {
   private async calculateNewBalanceBankAccountAndUpdate(
     bankAccountId: string,
     transactionType: TransactionType,
-    difference: number,
+    differenceForBalanceAdjustment: number,
     isCreatingTransaction = false
   ) {
     const { balance } = await this.bankAccountsRepo.findFirst({
@@ -154,14 +154,22 @@ export class TransactionsService {
 
     let adjustmentForTheBalanceAccount = 0;
 
-    const isExpense = transactionType === TransactionType.EXPENSE
-    const adjustmentOnCreatingTransaction = isCreatingTransaction ? -difference : difference;
-    const adjustmentOnDeletingOrUpdatingTransaction = isCreatingTransaction ? difference : -difference;
+    const isExpense = transactionType === TransactionType.EXPENSE;
+
+    const balanceAdjustment =
+      isCreatingTransaction
+        ? -differenceForBalanceAdjustment
+        : differenceForBalanceAdjustment;
+
+    const reverseBalanceAdjustment =
+      isCreatingTransaction
+        ? differenceForBalanceAdjustment
+        : -differenceForBalanceAdjustment;
 
     if (isExpense) {
-      adjustmentForTheBalanceAccount = adjustmentOnCreatingTransaction
+      adjustmentForTheBalanceAccount = balanceAdjustment
     } else {
-      adjustmentForTheBalanceAccount = adjustmentOnDeletingOrUpdatingTransaction
+      adjustmentForTheBalanceAccount = reverseBalanceAdjustment
     }
 
     const currentBalance = balance + adjustmentForTheBalanceAccount;
