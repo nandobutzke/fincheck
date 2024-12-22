@@ -7,13 +7,14 @@ import { ValidateCategoryOwnershipService } from '../../categories/services/vali
 import { ValidateTransactionOwnershipService } from '../services/validate-transaction-ownership.service';
 import { TransactionType } from "../entities/Transaction";
 import { BankAccountsRepository } from "src/shared/database/repositories/bankAccounts.repository";
-import { $Enums } from "@prisma/client";
+import { CategoriesRepository } from "src/shared/database/repositories/categories.repository";
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
     private readonly bankAccountsRepo: BankAccountsRepository,
+    private readonly categoriesRepo: CategoriesRepository,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService
@@ -76,6 +77,41 @@ export class TransactionsService {
         }
       }
     });
+  }
+
+  async findAllForExtract(
+    userId: string,
+    filters: {
+      month: number;
+      year: number;
+      bankAccountId: string;
+      type?: TransactionType;
+  }) {
+    const transactionsByUser = await this.findAllByUserId(userId, filters);
+    const bankAccount = await this.bankAccountsRepo.findFirst({
+      where: {
+        id: filters.bankAccountId
+      }
+    })
+
+    const transactions = await Promise.all(transactionsByUser.map(async ({ date, name, type, value, categoryId }) => {
+      const category = await this.categoriesRepo.findFirst({
+        where: { userId, id: categoryId },
+      })
+
+      return {
+        date,
+        category: category.name,
+        name,
+        type,
+        value,
+      };
+    }))
+
+    return {
+      transactions,
+      bankAccount
+    }
   }
 
   async update(userId: string, transactionId: string, updateTransactionDto: UpdateTransactionDto) {

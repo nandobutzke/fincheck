@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe, Query, ParseIntPipe, Res } from '@nestjs/common';
 import { TransactionsService } from './services/transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -6,10 +6,15 @@ import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import OptionalParseUUIDPipe from "src/shared/pipes/OptionalParseUUIDPipe";
 import { TransactionType } from "./entities/Transaction";
 import OptionalParseEnumPipe from "src/shared/pipes/OptionalParseEnumPipe";
+import { PdfService } from "./services/pdf.service";
+import { Response } from "express";
 
 @Controller('transactions')
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(
+    private readonly transactionsService: TransactionsService,
+    private readonly pdfService: PdfService
+  ) {}
 
   @Post()
   create(@ActiveUserId() userId: string, @Body() createTransactionDto: CreateTransactionDto) {
@@ -25,6 +30,31 @@ export class TransactionsController {
     @Query('type', new OptionalParseEnumPipe(TransactionType)) type?: TransactionType,
   ) {
     return this.transactionsService.findAllByUserId(userId, { month, year, bankAccountId, type });
+  }
+
+  @Get('extract/pdf')
+  async generateExtractPdf(
+    @Query('userId') userId: string,
+    @Query('month', ParseIntPipe) month: number,
+    @Query('year', ParseIntPipe) year: number,
+    @Query('bankAccountId', OptionalParseUUIDPipe) bankAccountId: string,
+    @Res() res: Response,
+    @Query('type', new OptionalParseEnumPipe(TransactionType)) type?: TransactionType,
+  ) {
+    const filters = { month, year, bankAccountId, type };
+
+    const data = await this.transactionsService.findAllForExtract(userId, filters);
+
+    const extract = await this.pdfService.generateExtract(data, { month, year })
+
+    const pdfBuffer = Buffer.from(extract.body, 'base64');
+
+    res.set({
+      'Content-Type': extract.headers['Content-Type'],
+      'Content-Disposition': extract.headers['Content-Disposition'],
+    });
+
+    res.send(pdfBuffer);
   }
 
   @Put(':transactionId')

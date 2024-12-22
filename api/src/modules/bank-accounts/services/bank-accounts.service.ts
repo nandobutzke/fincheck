@@ -25,6 +25,15 @@ export class BankAccountsService {
     });
   }
 
+  findFirst(userId: string, bankAccountId: string) {
+    return this.bankAccountsRepo.findFirst({
+      where: {
+        id: bankAccountId,
+        userId,
+      }
+    })
+  }
+
   async findAllByUserId(userId: string) {
     const bankAccounts = await this.bankAccountsRepo.findMany({
       where: {

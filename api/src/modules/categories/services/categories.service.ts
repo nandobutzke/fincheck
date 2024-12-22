@@ -10,4 +10,10 @@ export class CategoriesService {
       where: { userId }
     });
   }
+
+  findFirst(userId: string, categoryId: string) {
+    return this.categoriesRepository.findFirst({
+      where: { id: categoryId, userId }
+    });
+  }
 }
