@@ -1,0 +1,13 @@
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/index.handler
+      Runtime: nodejs22.x
+      CodeUri: .
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /lambda-pdf
+            Method: GET

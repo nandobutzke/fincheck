@@ -84,7 +84,7 @@ export class TransactionsService {
     filters: {
       month: number;
       year: number;
-      bankAccountId: string;
+      bankAccountId?: string;
       type?: TransactionType;
   }) {
     const transactionsByUser = await this.findAllByUserId(userId, filters);

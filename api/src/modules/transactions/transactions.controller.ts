@@ -32,18 +32,23 @@ export class TransactionsController {
     return this.transactionsService.findAllByUserId(userId, { month, year, bankAccountId, type });
   }
 
-  @Get('extract/pdf')
+  @Get('extract')
   async generateExtractPdf(
-    @Query('userId') userId: string,
+    @ActiveUserId() userId: string,
+    @Res() res: Response,
     @Query('month', ParseIntPipe) month: number,
     @Query('year', ParseIntPipe) year: number,
-    @Query('bankAccountId', OptionalParseUUIDPipe) bankAccountId: string,
-    @Res() res: Response,
+    @Query('bankAccountId', OptionalParseUUIDPipe) bankAccountId?: string,
     @Query('type', new OptionalParseEnumPipe(TransactionType)) type?: TransactionType,
   ) {
     const filters = { month, year, bankAccountId, type };
 
+    console.log({ filters })
+
     const data = await this.transactionsService.findAllForExtract(userId, filters);
+
+    console.log({ transactions: data.transactions })
+
 
     const extract = await this.pdfService.generateExtract(data, { month, year })
 

@@ -9,11 +9,11 @@ import { useTransactionsController } from "./useTransactionsController";
 import cn from "../../../../utils/cn";
 import { Spinner } from "../../../components/Spinner";
 import emptyStateImage from '../../../../assets/empty-state.svg';
-import { TransactionTypeDropdown } from "./TransactionTypeDropdown";
 import { FiltersModal } from "./FiltersModal";
 import { TransactionType } from "../../../../enums/TransactionType";
 import { formatDate } from "../../../../utils/formatDate";
 import { EditTransactionModal } from "../../modals/EditTransactionModal";
+import { TransactionTypeDropdown } from "./TransactionTypeDropdown";
 
 export function Transactions() {
   const {
@@ -21,10 +21,10 @@ export function Transactions() {
     transactions,
     isInitialLoading,
     isLoading,
-    handleChangeFilters,
     handleApplyFilters,
     isFiltersModalOpen,
     handleOpenFiltersModal,
+    handleChangeFilters,
     handleCloseFiltersModal,
     filters,
     isEditModalOpen,
@@ -68,7 +68,7 @@ export function Transactions() {
                 initialSlide={filters.month}
                 onSlideChange={swiper => {
                   if (swiper.realIndex === filters.month) return;
-                  handleChangeFilters('month')(swiper.realIndex)
+                  // handleChangeFilters('month')(swiper.realIndex)
                 }}
               >
                 <SliderNavigation />

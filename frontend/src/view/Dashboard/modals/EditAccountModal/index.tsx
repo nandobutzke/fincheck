@@ -6,8 +6,10 @@ import { InputCurrency } from "../../../components/InputCurrency";
 import { Modal } from "../../../components/Modal";
 import { Select } from "../../../components/Select";
 import { useEditAccountModalController } from "./useEditAccountModalController";
-import { TrashIcon } from "../../../components/icons/TrashIcon";
 import { ConfirmDeleteModal } from "../../../components/ConfirmDeleteModal";
+import { OptionsMenu } from "./OptionsMenu";
+import { useTransactionsController } from "../../components/Transactions/useTransactionsController";
+import { ExtractFiltersModal } from "../../components/Accounts/ExtractFiltersModal";
 
 export function EditAccountModal() {
   const {
@@ -22,8 +24,13 @@ export function EditAccountModal() {
     handleOpenDeleteModal,
     handleCloseDeleteModal,
     handleDeleteAccount,
-    isPendingDelete
+    isPendingDelete,
+    isExtractFiltersModalOpen,
+    handleCloseExtractFiltersModal,
+    handleOpenExtractFiltersModal,
   } = useEditAccountModalController();
+
+  const { handleGenerateExtract } = useTransactionsController();
 
   if (isDeleteModalOpen) {
     return (
@@ -37,16 +44,27 @@ export function EditAccountModal() {
     );
   }
 
+  if (isExtractFiltersModalOpen) {
+    return (
+      <ExtractFiltersModal
+        open={isExtractFiltersModalOpen}
+        onClose={handleCloseExtractFiltersModal}
+        onApplyFilters={handleGenerateExtract}
+      />
+    );
+  }
+
   return (
     <Modal
       title="Editar Conta"
       open={isEditAccountModalOpen}
       onClose={closeEditAccountModal}
-      rightAction={(
-        <button onClick={handleOpenDeleteModal}>
-          <TrashIcon className="w-6 h-6 text-red-900" />
-        </button>
-      )}
+      rightAction={
+        <OptionsMenu
+          onOpenDeleteModal={handleOpenDeleteModal}
+          onOpenExtractFiltersModal={handleOpenExtractFiltersModal}
+        />
+      }
     >
       <form onSubmit={handleSubmit}>
         <div>

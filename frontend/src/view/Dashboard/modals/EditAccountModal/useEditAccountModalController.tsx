@@ -43,6 +43,7 @@ export function useEditAccountModalController() {
     }
   });
 
+  const [isExtractFiltersModalOpen, setIsExtractFiltersModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -86,12 +87,22 @@ export function useEditAccountModalController() {
     setIsDeleteModalOpen(false);
   }
 
+  function handleOpenExtractFiltersModal() {
+    console.log('is open')
+    setIsExtractFiltersModalOpen(true);
+  }
+
+  function handleCloseExtractFiltersModal() {
+    setIsExtractFiltersModalOpen(false);
+  }
+
   async function handleDeleteAccount() {
     try {
       await removeAccount(accountBeingEdited!.id);
 
       queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['transactions-extract'] });
       toast.success('A conta foi deletada com sucesso!');
       closeEditAccountModal();
       reset();
@@ -111,6 +122,9 @@ export function useEditAccountModalController() {
     isDeleteModalOpen,
     handleOpenDeleteModal,
     handleCloseDeleteModal,
+    isExtractFiltersModalOpen,
+    handleOpenExtractFiltersModal,
+    handleCloseExtractFiltersModal,
     handleDeleteAccount,
     isPendingDelete,
   };

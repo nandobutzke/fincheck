@@ -46,7 +46,6 @@ export function EditTransactionModal({ transaction, open, onClose }: EditTransac
     );
   }
 
-
   return (
     <Modal
       title={isExpense ? 'Editar Despesa' : 'Editar Receita'}

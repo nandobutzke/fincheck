@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDashboard } from "../DasboardContext/useDashboard";
 import { useTransactions } from "../../../../app/hooks/useTransactions";
-import { TransactionsFilters } from "../../../../services/transactionsService/getAll";
 import { Transaction } from "../../../../app/entities/Transaction";
+import { TransactionsFilters } from "../../../../@types/TransactionsFilters";
+import { useExtract } from "../../../../app/hooks/useExtract";
+import { TransactionType } from "../../../../enums/TransactionType";
 
 export function useTransactionsController() {
   const { areValuesVisible } = useDashboard();
@@ -21,6 +23,16 @@ export function useTransactionsController() {
     refetchTransactions();
   }, [filters, refetchTransactions]);
 
+  const { generateExtract } = useExtract();
+
+  async function handleGenerateExtract(filters: TransactionsFilters) {
+    const extract = await generateExtract(filters)
+
+    const blobUrl = URL.createObjectURL(extract.data);
+
+    window.open(blobUrl);
+  }
+
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(filter: TFilter) {
     return (value: TransactionsFilters[TFilter]) => {
       if (value === filters[filter]) return;
@@ -33,11 +45,20 @@ export function useTransactionsController() {
   }
 
   function handleApplyFilters({
-    bankAccountId, year
-   }: { bankAccountId: string | undefined; year: number }) {
-     handleChangeFilters('year')(year);
-     handleChangeFilters('bankAccountId')(bankAccountId);
-     setIsFiltersModalOpen(false);
+    bankAccountId, year, month, type
+   }: {
+    bankAccountId: string | undefined;
+    year: number;
+    month: number;
+    type: TransactionType | undefined;
+  }) {
+    console.log({ bankAccountId, year, month, type })
+
+    handleChangeFilters('year')(year);
+    handleChangeFilters('month')(month);
+    handleChangeFilters('bankAccountId')(bankAccountId);
+    handleChangeFilters('type')(type);
+    setIsFiltersModalOpen(false);
  }
 
   function handleOpenFiltersModal() {
@@ -56,7 +77,6 @@ export function useTransactionsController() {
   function handleCloseEditModal() {
     setIsEditModalOpen(false);
     setTransactionBeingEdited(null);
-
   }
 
   return {
@@ -71,6 +91,7 @@ export function useTransactionsController() {
     handleCloseFiltersModal,
     filters,
     refetchTransactions,
+    handleGenerateExtract,
     isEditModalOpen,
     transactionBeingEdited,
     handleOpenEditModal,
