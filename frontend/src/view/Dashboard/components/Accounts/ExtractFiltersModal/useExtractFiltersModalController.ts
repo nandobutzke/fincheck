@@ -17,10 +17,12 @@ export function useExtractFiltersModalController() {
 
   function handleChangeMonth(step: number) {
     setSelectedMonth(prevState => {
-      if (prevState < MONTHS.length-1 && prevState >= 0) {
-        return prevState + step
+      const nextStep = prevState + step;
+
+      if (prevState < MONTHS.length-1 && nextStep >= 0) {
+        return nextStep;
       } else {
-        return 0
+        return 0;
       }
     });
   }
